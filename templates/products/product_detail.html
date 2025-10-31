@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}{{ product.title }}{% endblock %}
+{% block content %}
+<h2>{{ product.title }}</h2>
+{% if product.images.first %}
+  <img src="{{ product.images.first.image.url }}" width="300" class="mb-3">
+{% endif %}
+<p>{{ product.description }}</p>
+<p><strong>Цена:</strong> {{ product.price }} TMT</p>
+<p><strong>Категория:</strong> {{ product.category }}</p>
+<p><strong>Теги:</strong>
+  {% for t in product.tags.all %}
+    <span class="badge bg-secondary">{{ t.name }}</span>
+  {% endfor %}
+</p>
+{% if user == product.owner %}
+  <a href="{% url 'products:web_edit' product.id %}" class="btn btn-warning">Редактировать</a>
+{% endif %}
+<a href="{% url 'products:web_list' %}" class="btn btn-secondary">Назад</a>
+{% endblock %}

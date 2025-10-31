@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}Список продуктов{% endblock %}
+{% block content %}
+<h2 class="mb-3">Список продуктов</h2>
+<div class="row">
+  {% for p in products %}
+  <div class="col-md-4 mb-4">
+    <div class="card h-100">
+      {% if p.images.first %}
+        <img src="{{ p.images.first.image.url }}" class="card-img-top" alt="{{ p.title }}">
+      {% endif %}
+      <div class="card-body">
+        <h5 class="card-title">{{ p.title }}</h5>
+        <p class="card-text">{{ p.description|truncatechars:80 }}</p>
+        <p><strong>{{ p.price }} TMT</strong></p>
+        <a href="{% url 'products:web_detail' p.id %}" class="btn btn-primary">Подробнее</a>
+      </div>
+    </div>
+  </div>
+  {% empty %}
+    <p>Пока нет продуктов.</p>
+  {% endfor %}
+</div>
+{% endblock %}
