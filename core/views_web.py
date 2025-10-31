@@ -3,10 +3,21 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Product
 from .forms import ProductForm, ProductImageForm
+from django.db.models import Sum, F
+
 
 def product_list(request):
-    products = Product.objects.select_related('category').prefetch_related('tags', 'images').all()
-    return render(request, 'products/product_list.html', {'products': products})
+    products = Product.objects.select_related('category').prefetch_related('tags', 'images')
+    
+    total_stock = products.aggregate(total=Sum('stock'))['total'] or 0
+    total_value = products.aggregate(total=Sum(F('stock') * F('price')))['total'] or 0
+
+    context = {
+        'products': products,
+        'total_stock': total_stock,
+        'total_value': total_value,
+    }
+    return render(request, 'products/product_list.html', context)
 
 def product_detail(request, pk):
     product = get_object_or_404(Product, pk=pk)
